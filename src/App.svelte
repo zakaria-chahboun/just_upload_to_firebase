@@ -36,11 +36,11 @@
 
       let upload_image = await upload
         .ref()
-        .child(image.name)
+        .child(`Images/${image.name}`)
         .put(image, metadata_image);
       let upload_audio = await upload
         .ref()
-        .child(audio.name)
+        .child(`Audios/${audio.name}`)
         .put(audio, metadata_audio);
 
       let image_url = await upload_image.ref.getDownloadURL();
