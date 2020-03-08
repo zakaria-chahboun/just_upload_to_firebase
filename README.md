@@ -6,6 +6,8 @@
 
 ### Instalations:
 `cd just_upload_to_firebase`
+
+
 `npm i`
 
 ### Run!
