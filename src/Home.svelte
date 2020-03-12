@@ -117,6 +117,9 @@
       setTimeout(() => {
         showUpNotification = false;
       }, 3000);
+    } finally{
+      ClearFormInputs();
+      ShowAllData();
     }
   }
 </script>

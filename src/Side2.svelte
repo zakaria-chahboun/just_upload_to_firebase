@@ -37,7 +37,7 @@
     <label class="label">Add Image</label>
     <div class="file has-name is-fullwidth">
       <label class="file-label">
-        <input class="file-input" type="file" bind:files={image_file} />
+        <input class="file-input" type="file" bind:files={image_file} accept="image/png"/>
         <span class="file-cta">
           <span class="file-icon">
             <i class="fas fa-upload" />
@@ -64,7 +64,7 @@
         <input
           class="file-input"
           type="file"
-          bind:files={image_description_file} />
+          bind:files={image_description_file} accept="image/png"/>
         <span class="file-cta">
           <span class="file-icon">
             <i class="fas fa-upload" />
@@ -89,7 +89,7 @@
 <label class="label">Add audio</label>
 <div class="file has-name is-fullwidth">
   <label class="file-label">
-    <input class="file-input" type="file" bind:files={audio_file} />
+    <input class="file-input" type="file" bind:files={audio_file} accept="audio/ogg"/>
     <span class="file-cta">
       <span class="file-icon">
         <i class="fas fa-upload" />
@@ -108,7 +108,7 @@
 <label class="label">Add Audio Description</label>
 <div class="file has-name is-fullwidth">
   <label class="file-label">
-    <input class="file-input" type="file" bind:files={audio_description_file} />
+    <input class="file-input" type="file" bind:files={audio_description_file} accept="audio/ogg"/>
     <span class="file-cta">
       <span class="file-icon">
         <i class="fas fa-upload" />

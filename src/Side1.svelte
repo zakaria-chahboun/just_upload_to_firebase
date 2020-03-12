@@ -19,7 +19,7 @@
   let tags = []; // arrayof objects: {id, text}
 
   // Languages
-  let lang = "en"; //by default
+  let lang = "ar"; //by default
 
   /*** functions ***/
   function addAnswer() {
@@ -85,11 +85,11 @@
 <label class="label">Choose Language</label>
 <div class="control">
   <label class="radio">
-    <input type="radio" name="lang" checked bind:group={lang} value="en" />
+    <input type="radio" name="lang" bind:group={lang} value="en" />
     English
   </label>
   <label class="radio">
-    <input type="radio" name="lang" bind:group={lang} value="fr" />
+    <input type="radio" name="lang" bind:group={lang} value="fr" checked/>
     French
   </label>
   <label class="radio">
@@ -175,8 +175,9 @@
   {#each tags as e, i}
     <div class="control" id={e.id}>
       <div class="tags has-addons">
-        <a class="tag is-success ">{e.text}</a>
-        <a class="tag is-delete" on:click={() => deleteTag(i)} />
+        <a href=":0" class="tag is-success ">{e.text}</a>
+        <a href=":0" class="tag is-delete" on:click={() => deleteTag(i)}>
+        </a>
       </div>
     </div>
   {:else}
