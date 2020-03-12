@@ -32,15 +32,6 @@
     answers = answers;
   }
 
-  // ALL DATA TO SEND :)
-  $: transport1.set({
-    question,
-    question_description,
-    answers,
-    type,
-    lang
-  });
-
   // Right to left direction (arabic)
   let direction = "";
   $: if (lang === "ar") {
@@ -54,8 +45,34 @@
     let id = type;
     let select = document.getElementById("MY_TYPE_SELECT");
     let text = select.options[select.selectedIndex].text;
-    tags = [...tags, { id, text }];
+    let duplicate = false;
+    if (tags.length > 0) {
+      for (const el of tags) {
+        if (el.id === id) {
+          duplicate = true;
+          return;
+        }
+      }
+    }
+    if (!duplicate) {
+      tags = [...tags, { id, text }];
+    }
   }
+
+  // delete tag
+  function deleteTag(index) {
+    tags.splice(index, 1);
+    tags = tags;
+  }
+
+  // ALL DATA TO SEND :)
+  $: transport1.set({
+    question,
+    question_description,
+    answers,
+    tags,
+    lang
+  });
 </script>
 
 <style>
@@ -122,11 +139,11 @@
   </div>
   <div class="control is-expanded">
     <div class="select is-fullwidth">
-      <select bind:value={type} id="MY_TYPE_SELECT">
+      <FirebaseApp {firebase}>
         <!-- Get the list of types from firestore (realtime updates :) -->
-        <FirebaseApp {firebase}>
-          <!-- you have to declare "_types" in "script tag" to can write on it ;) not only read it -->
-          <Collection path={types_collection} let:data={_types} let:ref>
+        <!-- you have to declare "_types" in "script tag" to can write on it ;) not only read it -->
+        <Collection path={types_collection} let:data={_types} let:ref>
+          <select bind:value={type} id="MY_TYPE_SELECT">
             {#each _types as mytype}
               {#if lang === 'en'}
                 <option value={mytype.id}>{mytype.en}</option>
@@ -136,9 +153,9 @@
                 <option value={mytype.id}>{mytype.ar}</option>
               {/if}
             {/each}
-          </Collection>
-        </FirebaseApp>
-      </select>
+          </select>
+        </Collection>
+      </FirebaseApp>
     </div>
   </div>
   <div class="control">
@@ -155,12 +172,11 @@
 
 <!-- Tag types-->
 <div class="field is-grouped is-grouped-multiline">
-
-  {#each tags as e}
+  {#each tags as e, i}
     <div class="control" id={e.id}>
       <div class="tags has-addons">
         <a class="tag is-success ">{e.text}</a>
-        <a class="tag is-delete" />
+        <a class="tag is-delete" on:click={() => deleteTag(i)} />
       </div>
     </div>
   {:else}
