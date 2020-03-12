@@ -1,5 +1,7 @@
 <script>
   import { transport1 } from "./Store.js";
+  import { firebase } from "./firebase.js";
+  import { FirebaseApp, Doc, Collection } from "sveltefire";
 
   //Question
   let question = "";
@@ -11,15 +13,13 @@
   let answers = [];
 
   // Types: array
-  let types = [];
-  for (let i = 0; i < 10; i++) {
-    types[i] = `type${i + 1}`;
-  }
-  // Chosen type
-  let type = "type1"; //by default
+  let types_collection = "/typesQuestion"; // for firebase
+  let _types; // just for firebase
+  let type; // Chosen type
+  let tags = []; // arrayof objects: {id, text}
 
   // Languages
-  let lang = "ar"; //by default
+  let lang = "en"; //by default
 
   /*** functions ***/
   function addAnswer() {
@@ -33,29 +33,51 @@
   }
 
   // ALL DATA TO SEND :)
-  $:transport1.set({
+  $: transport1.set({
     question,
     question_description,
     answers,
     type,
     lang
   });
+
+  // Right to left direction (arabic)
+  let direction = "";
+  $: if (lang === "ar") {
+    direction = "rtl";
+  } else {
+    direction = "";
+  }
+
+  // Add type/tag
+  function addTag() {
+    let id = type;
+    let select = document.getElementById("MY_TYPE_SELECT");
+    let text = select.options[select.selectedIndex].text;
+    tags = [...tags, { id, text }];
+  }
 </script>
+
+<style>
+  .rtl {
+    direction: rtl;
+  }
+</style>
 
 <!-- To choose question langs -->
 <label class="label">Choose Language</label>
 <div class="control">
   <label class="radio">
-    <input type="radio" name="lang" checked bind:group={lang} value="ar" />
-    Arabic
-  </label>
-  <label class="radio">
-    <input type="radio" name="lang" bind:group={lang} value="en" />
+    <input type="radio" name="lang" checked bind:group={lang} value="en" />
     English
   </label>
   <label class="radio">
     <input type="radio" name="lang" bind:group={lang} value="fr" />
     French
+  </label>
+  <label class="radio">
+    <input type="radio" name="lang" bind:group={lang} value="ar" />
+    Arabic
   </label>
 </div>
 <br />
@@ -66,7 +88,7 @@
   <div class="control has-icons-left is-expanded">
     <input
       type="text"
-      class="input "
+      class="input {direction}"
       bind:value={question}
       placeholder="add question here .." />
     <span class="icon is-left">
@@ -79,7 +101,7 @@
 <label class="label">Add description</label>
 <div class="control">
   <textarea
-    class="textarea has-fixed-size"
+    class="textarea has-fixed-size {direction}"
     placeholder="add description here .."
     bind:value={question_description} />
 </div>
@@ -87,16 +109,64 @@
 
 <!-- Types -->
 <label class="label">Choose Type</label>
-<div class="control">
-  <div class="select is-fullwidth">
-    <select bind:value={type}>
-      {#each types as e}
-        <option value={e}>{e}</option>
-      {/each}
-    </select>
+<div class="field has-addons">
+  <div class="control">
+    <a
+      href="/types"
+      class="button has-tooltip-left has-tooltip-active"
+      data-tooltip="To Manage Types Click Here">
+      <span class="icon">
+        <i class="fas fa-list" />
+      </span>
+    </a>
+  </div>
+  <div class="control is-expanded">
+    <div class="select is-fullwidth">
+      <select bind:value={type} id="MY_TYPE_SELECT">
+        <!-- Get the list of types from firestore (realtime updates :) -->
+        <FirebaseApp {firebase}>
+          <!-- you have to declare "_types" in "script tag" to can write on it ;) not only read it -->
+          <Collection path={types_collection} let:data={_types} let:ref>
+            {#each _types as mytype}
+              {#if lang === 'en'}
+                <option value={mytype.id}>{mytype.en}</option>
+              {:else if lang === 'fr'}
+                <option value={mytype.id}>{mytype.fr}</option>
+              {:else if lang === 'ar'}
+                <option value={mytype.id}>{mytype.ar}</option>
+              {/if}
+            {/each}
+          </Collection>
+        </FirebaseApp>
+      </select>
+    </div>
+  </div>
+  <div class="control">
+    <button
+      class="button has-tooltip-bottom"
+      data-tooltip="click to select type"
+      on:click={() => addTag()}>
+      <span class="icon">
+        <i class="fas fa-clipboard-check" />
+      </span>
+    </button>
   </div>
 </div>
-<br />
+
+<!-- Tag types-->
+<div class="field is-grouped is-grouped-multiline">
+
+  {#each tags as e}
+    <div class="control" id={e.id}>
+      <div class="tags has-addons">
+        <a class="tag is-success ">{e.text}</a>
+        <a class="tag is-delete" />
+      </div>
+    </div>
+  {:else}
+    <div class="notification has-text-centered">NO TYPES IS HERE!</div>
+  {/each}
+</div>
 
 <!-- Add answer -->
 <label class="label">Add answers</label>
@@ -104,7 +174,7 @@
   <div class="control has-icons-left is-expanded">
     <input
       type="text"
-      class="input "
+      class="input {direction}"
       bind:value={text}
       placeholder="add somthing here .." />
     <span class="icon is-left">
@@ -136,7 +206,7 @@
         <button class="button is-static">{i + 1}</button>
       </div>
       <div class="control is-expanded">
-        <input type="text" class="input" value={text} readonly />
+        <input type="text" class="input {direction}" value={text} readonly />
       </div>
       <div class="control">
         <input type="text" class="input" value={isCorrect} readonly />
