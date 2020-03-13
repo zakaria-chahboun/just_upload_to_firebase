@@ -1,6 +1,7 @@
 <script>
   import Side1 from "./Side1.svelte";
   import Side2 from "./Side2.svelte";
+  import TableData from "./TableData.svelte";
   import Notification from "./Notification.svelte";
 
   import { get } from "svelte/store";
@@ -14,6 +15,13 @@
   let type = "";
   let message = "";
   let isLoading = false;
+
+  // Retireve Extension (from file :)
+  function retrieveExtension(filename, extension) {
+    let fn = filename.split(".").pop();
+    if (fn.toLowerCase() === extension.toLowerCase()) return true;
+    return false;
+  }
 
   // Firebase
   let db = firebase.firestore();
@@ -37,9 +45,23 @@
         throw Error("Image or Audio is empty!");
       }
       // check if tags/types: exit
-      if (DATA.tags.lenght <= 0) {
+      if (DATA.tags.length <= 0) {
         throw Error("Tags/Types Empty!");
       }
+      // Check File Extension (png/ogg): exit
+      if (
+        !retrieveExtension(DATA.image_file[0].name, "png") ||
+        !retrieveExtension(DATA.image_description_file[0].name, "png")
+      ) {
+        throw Error("We can accept only '.png 'image format");
+      }
+      if (
+        !retrieveExtension(DATA.audio_file[0].name, "ogg") ||
+        !retrieveExtension(DATA.audio_description_file[0].name, "ogg")
+      ) {
+        throw Error("We can accept only '.ogg 'audio format");
+      }
+
       isLoading = true; // ui/ux
 
       const image = DATA.image_file[0];
@@ -70,20 +92,20 @@
       //Uploads files
       await upload
         .ref()
-        .child(`Images/${QuestionID}`)
+        .child(`Images/${QuestionID}_Q.png`)
         .put(image, metadata_image);
       await upload
         .ref()
-        .child(`Audios/${QuestionID}`)
+        .child(`Audios/${QuestionID}_Q.ogg`)
         .put(audio, metadata_audio);
       await upload
         .ref()
-        .child(`Images/Descriptions/${QuestionID}`)
-        .put(audio, metadata_image_description);
+        .child(`Images/${QuestionID}_D.png`)
+        .put(image_description, metadata_image_description);
       await upload
         .ref()
-        .child(`Audios/Descriptions/${QuestionID}`)
-        .put(audio, audio_description);
+        .child(`Audios/${QuestionID}_D.ogg`)
+        .put(audio_description, audio_description);
 
       // insert doc in firestore
       await db
@@ -96,10 +118,10 @@
           textDescription: DATA.question_description,
           typeQuestion: DATA.tags.map(e => e.id), // add just the id of types
           answers: DATA.answers,
-          imageQuestion: `Images/${QuestionID}`,
-          imageDescription: `Images/Descriptions/${QuestionID}`,
-          audioQuestion: `Audios/${QuestionID}`,
-          audioDescription: `Audios/Descriptions/${QuestionID}`
+          imageQuestion: `Images/${QuestionID}_Q.png`,
+          imageDescription: `Images/${QuestionID}_D.png`,
+          audioQuestion: `Audios/${QuestionID}_Q.ogg`,
+          audioDescription: `Audios/${QuestionID}_D.ogg`
         });
 
       isLoading = false;
@@ -117,11 +139,12 @@
       setTimeout(() => {
         showUpNotification = false;
       }, 3000);
-    } finally{
-      ClearFormInputs();
-      ShowAllData();
     }
   }
+
+  // This is just for transform 'lang' from 'Side1' passing-by 'Home' to 'TableData'
+  // for that we use (bind:prop) => (bind:lang)
+  let CHOEN_LANG;
 </script>
 
 <style>
@@ -142,27 +165,27 @@
 
 <!-- *** Body *** -->
 <div class="columns up">
-
   <!-- Just a space for decoration -->
   <div class="column is-2" />
+
   <!-- Side 1 -->
   <div class="column">
-    <Side1 />
+    <Side1 bind:lang={CHOEN_LANG}/>
   </div>
   <!-- Side 2 -->
   <div class="column">
     <Side2 />
   </div>
+
   <!-- Just a space for decoration -->
   <div class="column is-2" />
-
 </div>
 
 <!-- *** ADD TO DATABASE *** -->
 <div class="columns">
-
   <!-- Just a space for decoration -->
   <div class="column is-2" />
+
   <div class="column">
     <button
       class="button is-success is-fullwidth {isLoading ? 'is-loading' : ''}"
@@ -170,7 +193,24 @@
       ADD TO DATABASE
     </button>
   </div>
+
   <!-- Just a space for decoration -->
   <div class="column is-2" />
+</div>
 
+<!-- DEVIDER -->
+<div class="is-divider" data-content="SHOW TABLES" />
+
+<!-- TABLES OF DATA -->
+<div class="columns up">
+  <!-- Just a space for decoration -->
+  <div class="column is-1" />
+
+  <!-- DATA -->
+  <div class="column">
+    <TableData bind:lang={CHOEN_LANG}/>
+  </div>
+
+  <!-- Just a space for decoration -->
+  <div class="column is-1" />
 </div>
