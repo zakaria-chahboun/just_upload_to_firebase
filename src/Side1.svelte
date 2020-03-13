@@ -74,7 +74,15 @@
     lang
   });
 
-
+  // clean data
+  export let clean = false;
+  $: if (clean) {
+    question = "";
+    question_description = "";
+    answers = [];
+    tags = [];
+    clean = false;
+  }
 </script>
 
 <style>

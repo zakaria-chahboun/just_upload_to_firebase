@@ -145,6 +145,10 @@
   // This is just for transform 'lang' from 'Side1' passing-by 'Home' to 'TableData'
   // for that we use (bind:prop) => (bind:lang)
   let CHOEN_LANG;
+
+  // This is just for clean all field of (Side1 and 2) 
+  // for that we use (bind:clean)
+  let CLEAN = false;
 </script>
 
 <style>
@@ -170,11 +174,11 @@
 
   <!-- Side 1 -->
   <div class="column">
-    <Side1 bind:lang={CHOEN_LANG}/>
+    <Side1 bind:lang={CHOEN_LANG} bind:clean={CLEAN} />
   </div>
   <!-- Side 2 -->
   <div class="column">
-    <Side2 />
+    <Side2 bind:clean={CLEAN} />
   </div>
 
   <!-- Just a space for decoration -->
@@ -192,6 +196,9 @@
       on:click={getData}>
       ADD TO DATABASE
     </button>
+    <button class="button is-info is-fullwidth" on:click={() => (CLEAN = true)}>
+      CLEAN UP
+    </button>
   </div>
 
   <!-- Just a space for decoration -->
@@ -203,14 +210,10 @@
 
 <!-- TABLES OF DATA -->
 <div class="columns up">
-  <!-- Just a space for decoration -->
-  <div class="column is-1" />
 
   <!-- DATA -->
   <div class="column">
-    <TableData bind:lang={CHOEN_LANG}/>
+    <TableData bind:lang={CHOEN_LANG} />
   </div>
 
-  <!-- Just a space for decoration -->
-  <div class="column is-1" />
 </div>
