@@ -99,19 +99,6 @@
   }
 </style>
 
-<!-- nav bar -->
-<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="/">
-      <strong>Go home</strong>
-      <span class="icon">
-        <i class="fas fa-home" />
-      </span>
-      <strong>!</strong>
-    </a>
-  </div>
-</nav>
-
 <!-- *** Notification *** -->
 {#if showUpNotification}
   <Notification

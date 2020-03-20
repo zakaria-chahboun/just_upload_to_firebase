@@ -144,9 +144,9 @@
 
   // This is just for transform 'lang' from 'Side1' passing-by 'Home' to 'TableData'
   // for that we use (bind:prop) => (bind:lang)
-  let CHOEN_LANG;
+  let CHOSEN_LANG;
 
-  // This is just for clean all field of (Side1 and 2) 
+  // This is just for clean all field of (Side1 and 2)
   // for that we use (bind:clean)
   let CLEAN = false;
 </script>
@@ -174,7 +174,7 @@
 
   <!-- Side 1 -->
   <div class="column">
-    <Side1 bind:lang={CHOEN_LANG} bind:clean={CLEAN} />
+    <Side1 bind:lang={CHOSEN_LANG} bind:clean={CLEAN} />
   </div>
   <!-- Side 2 -->
   <div class="column">
@@ -213,7 +213,7 @@
 
   <!-- DATA -->
   <div class="column">
-    <TableData bind:lang={CHOEN_LANG} />
+    <TableData bind:lang={CHOSEN_LANG} />
   </div>
 
 </div>

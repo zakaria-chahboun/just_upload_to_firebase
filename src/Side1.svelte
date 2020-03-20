@@ -137,16 +137,6 @@
 <!-- Types -->
 <label class="label">Choose Type</label>
 <div class="field has-addons">
-  <div class="control">
-    <a
-      href="/types"
-      class="button has-tooltip-left has-tooltip-active"
-      data-tooltip="To Manage Types Click Here">
-      <span class="icon">
-        <i class="fas fa-list" />
-      </span>
-    </a>
-  </div>
   <div class="control is-expanded">
     <div class="select is-fullwidth">
       <FirebaseApp {firebase}>
@@ -185,8 +175,8 @@
   {#each tags as e, i}
     <div class="control" id={e.id}>
       <div class="tags has-addons">
-        <a href=":0" class="tag is-success ">{e.text}</a>
-        <a href=":0" class="tag is-delete" on:click={() => deleteTag(i)} />
+        <a href="#" class="tag is-success ">{e.text}</a>
+        <a href="#" class="tag is-delete" on:click={() => deleteTag(i)} />
       </div>
     </div>
   {:else}
