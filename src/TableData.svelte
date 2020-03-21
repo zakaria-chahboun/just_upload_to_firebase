@@ -46,7 +46,9 @@
             <!-- Langs -->
             <td>{lang}</td>
             <!-- Question -->
-            <td>{q.textQuestion}</td>
+            <td>
+            <!-- {q.textQuestion} -->
+            </td>
             <!-- Question description -->
             <td>{q.textDescription}</td>
             <!-- Tyes -->
@@ -62,20 +64,7 @@
             </td>
             <!-- Answers -->
             <td>
-              {#each q.answers as answer}
-                {#if answer.isCorrect}
-                  {answer.text} :
-                  <span class="icon has-text-info">
-                    <i class="fas fa-thumbs-up" />
-                  </span>
-                {:else}
-                  {answer.text} :
-                  <span class="icon has-text-danger">
-                    <i class="fas fa-thumbs-down" />
-                  </span>
-                {/if}
-                <br />
-              {/each}
+         
             </td>
             <!-- Image Question -->
             <td>
