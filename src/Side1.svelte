@@ -12,6 +12,9 @@
   let isCorrect = false;
   let answers = [];
 
+  // Q&A
+  let questions_answers = [];
+
   // Types: array
   let types_collection = "/typesQuestion"; // for firebase
   let _types; // just for firebase
@@ -22,14 +25,33 @@
   export let lang = "ar"; //by default
 
   /*** functions ***/
+  // add answers
   function addAnswer() {
     let a = { text, isCorrect };
     answers = [...answers, a];
     text = "";
   }
+  // add answers
   function deleteAnswer(index) {
     answers.splice(index, 1);
     answers = answers;
+  }
+  // add questions and answers to the stuck
+  function addQ_A() {
+    let qa = {
+      text_question: question,
+      answers: answers
+    };
+    questions_answers = [...questions_answers, qa];
+    // clear fields
+    answers = [];
+    question = "";
+    text = "";
+  }
+  // delete questions and answers from the stuck
+  function deleteQ_A(index) {
+    questions_answers.splice(index, 1);
+    questions_answers = questions_answers;
   }
 
   // Right to left direction (arabic)
@@ -67,9 +89,8 @@
 
   // ALL DATA TO SEND :)
   $: transport1.set({
-    question,
+    questions_answers,
     question_description,
-    answers,
     tags,
     lang
   });
@@ -78,8 +99,9 @@
   export let clean = false;
   $: if (clean) {
     question = "";
-    question_description = "";
     answers = [];
+    question_description = "";
+    questions_answers = [];
     tags = [];
     clean = false;
   }
@@ -108,21 +130,6 @@
   </label>
 </div>
 <br />
-
-<!-- Add question -->
-<label class="label">Add question</label>
-<div class="field">
-  <div class="control has-icons-left is-expanded">
-    <input
-      type="text"
-      class="input {direction}"
-      bind:value={question}
-      placeholder="add question here .." />
-    <span class="icon is-left">
-      <i class="fas fa-question-circle" />
-    </span>
-  </div>
-</div>
 
 <!-- Add question description -->
 <label class="label">Add description</label>
@@ -175,24 +182,40 @@
   {#each tags as e, i}
     <div class="control" id={e.id}>
       <div class="tags has-addons">
-        <a href="#" class="tag is-success ">{e.text}</a>
-        <a href="#" class="tag is-delete" on:click={() => deleteTag(i)} />
+        <a class="tag is-success ">{e.text}</a>
+        <a class="tag is-delete" on:click={() => deleteTag(i)} />
       </div>
     </div>
-  {:else}
-    <div class="notification has-text-centered">NO TYPES IS HERE!</div>
   {/each}
+</div>
+{#if tags.length === 0}
+  <div class="notification has-text-centered">No Tags Here ..!</div>
+{/if}
+
+<!-- Q & A -->
+<!-- Add question -->
+<label class="label">Add question</label>
+<div class="field">
+  <div class="control has-icons-left is-expanded">
+    <input
+      type="text"
+      class="input {direction}"
+      bind:value={question}
+      placeholder="add question here .." />
+    <span class="icon is-left">
+      <i class="fas fa-question-circle" />
+    </span>
+  </div>
 </div>
 
 <!-- Add answer -->
-<label class="label">Add answers</label>
 <div class="field has-addons">
   <div class="control has-icons-left is-expanded">
     <input
       type="text"
       class="input {direction}"
       bind:value={text}
-      placeholder="add somthing here .." />
+      placeholder="add answer here .." />
     <span class="icon is-left">
       <i class="fas fa-file-alt" />
     </span>
@@ -214,6 +237,7 @@
     </button>
   </div>
 </div>
+
 <!-- Answers .. -->
 {#each answers as { text, isCorrect }, i}
   {#if answers.lenght !== 0}
@@ -237,3 +261,63 @@
     </div>
   {/if}
 {/each}
+
+<!-- validate (add q and a to list) -->
+<div class="field">
+  <div class="control">
+    <button class="button is-fullwidth is-success" on:click={addQ_A}>
+      <span>
+        <i class="fas fa-check" />
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Show Q&A (stuck :) -->
+<aside class="menu">
+  {#each questions_answers as q, i}
+    <ul class="menu-list">
+      <!-- show question -->
+      <li>
+        <span class="menu-label">{q.text_question}</span>
+        <a class="delete" on:click={() => deleteQ_A(i)} />
+      </li>
+      <!-- show answers -->
+      <li>
+        {#each q.answers as a, j}
+          <ul>
+            <li>
+              <div class="field has-addons">
+                <div class="control">
+                  <button class="button is-static is-small">{j + 1}</button>
+                </div>
+                <div class="control is-expanded">
+                  <input
+                    type="text"
+                    class="input {direction} is-small"
+                    value={a.text}
+                    readonly />
+                </div>
+                <div class="control">
+                  <button class="button is-static is-small">
+                    {#if a.isCorrect}
+                      <span class="icon has-text-success">
+                        <i class="fas fa-thumbs-up" />
+                      </span>
+                    {:else}
+                      <span class="icon">
+                        <i class="fas fa-thumbs-down" />
+                      </span>
+                    {/if}
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        {/each}
+      </li>
+    </ul>
+  {:else}
+    <div class="notification has-text-centered">No Questions and Answers Here ..!</div>
+  {/each}
+</aside>

@@ -35,6 +35,10 @@
     DATA = { ...data1, ...data2 };
 
     try {
+      // check if questions & answers: exit
+      if (DATA.questions_answers.length <= 0) {
+        throw Error("Questions and answers Empty!");
+      }
       // check if no file to upload: exit
       if (
         !DATA.image_file[0] ||
@@ -114,10 +118,9 @@
         .collection(`${DATA.lang}`)
         .doc(`${QuestionID}`)
         .set({
-          textQuestion: DATA.question,
+          questionsAnswers : DATA.questions_answers,
           textDescription: DATA.question_description,
           typeQuestion: DATA.tags.map(e => e.id), // add just the id of types
-          answers: DATA.answers,
           imageQuestion: `Images/${QuestionID}_Q.png`,
           imageDescription: `Images/${QuestionID}_D.png`,
           audioQuestion: `Audios/${QuestionID}_Q.ogg`,
