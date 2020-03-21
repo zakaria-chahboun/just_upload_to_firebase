@@ -118,7 +118,7 @@
         .collection(`${DATA.lang}`)
         .doc(`${QuestionID}`)
         .set({
-          questionsAnswers : DATA.questions_answers,
+          questionsAnswers: DATA.questions_answers,
           textDescription: DATA.question_description,
           typeQuestion: DATA.tags.map(e => e.id), // add just the id of types
           imageQuestion: `Images/${QuestionID}_Q.png`,
