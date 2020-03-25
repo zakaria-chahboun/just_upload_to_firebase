@@ -34,7 +34,7 @@
     let data2 = get(transport2);
     DATA = { ...data1, ...data2 };
 
-    try {
+    try {      
       // check if questions & answers: exit
       if (DATA.questions_answers.length <= 0) {
         throw Error("Questions and answers Empty!");

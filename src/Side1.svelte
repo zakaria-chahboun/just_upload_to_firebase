@@ -38,6 +38,9 @@
   }
   // add questions and answers to the stuck
   function addQ_A() {
+    if(answers.length === 0){ // for do not adding empty answers (we have to respect the array schema)
+      return;
+    }
     let qa = {
       text_question: question,
       answers: answers
