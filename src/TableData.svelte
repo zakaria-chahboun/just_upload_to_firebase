@@ -17,6 +17,19 @@
           .collection(`${lang}`)
           .doc(`${id}`)
           .delete();
+
+        await upload
+          .child(`Images/${id}_Q.png`)
+          .delete();
+        await upload
+          .child(`Audios/${id}_Q.ogg`)
+          .delete();
+        await upload
+          .child(`Images/${id}_D.png`)
+          .delete();
+        await upload
+          .child(`Audios/${id}_D.ogg`)
+          .delete();
       } catch (error) {
         console.log(`FIREBASE ERROR: ${error}`);
       }
