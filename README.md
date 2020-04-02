@@ -17,6 +17,13 @@
 *(on http://localhost:5000)*
 
 
+#### Screenshots:
+
+<img src='./screenshots/screenshot1.png' with='500px'>
+
+
+<img src='./screenshots/screenshot2.png' with='500px'>
+
 ------------------------------
 
 zakaria chahboun 2020 :wink:
